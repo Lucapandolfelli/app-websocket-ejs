@@ -1,4 +1,12 @@
 const express = require("express");
+
+// SQLite3
+const { optionsSQLite } = require("./options/sqliteDB");
+const knexSQLite = require("knex")(optionsSQLite);
+// MariaDB
+const { optionsMariaDB } = require("./options/mariaDB");
+const knexMariaDB = require("knex")(optionsMariaDB);
+
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
 
@@ -7,7 +15,7 @@ const PORT = process.env.PORT || 8080;
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
 
-const addIdAndPushToArray = (array, newItem) => {
+/* const addIdAndPushToArray = (array, newItem) => {
   const ids = array.map((item) => item.id);
   if (ids.length === 0) {
     newItem.id = 1;
@@ -19,7 +27,7 @@ const addIdAndPushToArray = (array, newItem) => {
 };
 
 let productos = [];
-let mensajes = [];
+let mensajes = []; */
 
 // Middlewares
 app.use(express.static(__dirname + "/public"));
@@ -39,10 +47,20 @@ io.on("connection", (socket) => {
   console.log(`${socket.id} connected.`);
 
   // Products
-  socket.emit("products", productos);
+  socket.emit(
+    "products",
+    knexMariaDB("productos")
+      .select("*")
+      .then((products) => products)
+  );
 
   // Messages
-  socket.emit("messages", mensajes);
+  socket.emit(
+    "messages",
+    knexSQLite("messages")
+      .select("*")
+      .then((messages) => messages)
+  );
 
   // New product
   socket.on("new-product", (newProduct) => {
