@@ -1,19 +1,15 @@
-const express = require("express");
-
-// SQLite3
-const { optionsSQLite } = require("./options/sqliteDB");
-const knexSQLite = require("knex")(optionsSQLite);
-// MariaDB
-const { optionsMariaDB } = require("./options/mariaDB");
-const knexMariaDB = require("knex")(optionsMariaDB);
-
-const { Server: HttpServer } = require("http");
-const { Server: IOServer } = require("socket.io");
+import express from "express";
+import { mariaDB, sqliteDB } from "./config/index.js";
+import http from "http";
+import { Server } from "socket.io";
+import Contenedor from "./container/Contenedor.js";
+const productsContainer = new Contenedor(mariaDB, "productos");
+const messagesContainer = new Contenedor(sqliteDB, "messages");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-const httpServer = new HttpServer(app);
-const io = new IOServer(httpServer);
+const httpServer = http.createServer(app);
+const io = new Server(httpServer);
 
 /* const addIdAndPushToArray = (array, newItem) => {
   const ids = array.map((item) => item.id);
@@ -30,11 +26,11 @@ let productos = [];
 let mensajes = []; */
 
 // Middlewares
-app.use(express.static(__dirname + "/public"));
+app.use(express.static("public"));
 
 // View engine
 app.set("view engine", "ejs");
-app.set("views", __dirname + "/views");
+app.set("views", "./views");
 
 // Routes
 app.get("/", (req, res) => {
@@ -42,36 +38,28 @@ app.get("/", (req, res) => {
 });
 
 // Socket.io
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   // Connected
   console.log(`${socket.id} connected.`);
 
   // Products
-  socket.emit(
-    "products",
-    knexMariaDB("productos")
-      .select("*")
-      .then((products) => products)
-  );
+  socket.emit("products", await productsContainer.getAll());
 
   // Messages
-  socket.emit(
-    "messages",
-    knexSQLite("messages")
-      .select("*")
-      .then((messages) => messages)
-  );
+  socket.emit("messages", await messagesContainer.getAll());
 
   // New product
-  socket.on("new-product", (newProduct) => {
-    addIdAndPushToArray(productos, newProduct);
-    io.sockets.emit("products", productos);
+  socket.on("new-product", async (newProduct) => {
+    if (await productsContainer.save(newProduct)) {
+      io.sockets.emit("products", await productsContainer.getAll());
+    }
   });
 
   // New messages
-  socket.on("new-message", (newMessage) => {
-    addIdAndPushToArray(mensajes, newMessage);
-    io.sockets.emit("messages", mensajes);
+  socket.on("new-message", async (newMessage) => {
+    if (await messagesContainer.save(newMessage)) {
+      io.sockets.emit("messages", await messagesContainer.getAll());
+    }
   });
 
   // Disconnected
