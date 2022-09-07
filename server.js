@@ -35,11 +35,6 @@ app.use(router);
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
-// Routes
-app.get("/", (req, res) => {
-  res.render("index.ejs");
-});
-
 // Socket.io
 io.on("connection", async (socket) => {
   // Connected

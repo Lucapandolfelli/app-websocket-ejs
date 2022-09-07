@@ -15,7 +15,7 @@ const renderProducts = (products) => {
                 </tr>`;
       })
       .join(" ");
-    document.querySelector("products").innerHTML = html;
+    document.getElementById("products").innerHTML = html;
   }
 };
 
