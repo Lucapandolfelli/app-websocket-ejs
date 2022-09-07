@@ -3,6 +3,7 @@ const sqliteDB = {
   connection: {
     filename: "./db/messages.db3",
   },
+  useNullAsDefault: true,
 };
 
 export default sqliteDB;

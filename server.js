@@ -1,8 +1,10 @@
-import express from "express";
 import { mariaDB, sqliteDB } from "./config/index.js";
+import express from "express";
+import Contenedor from "./container/Contenedor.js";
 import http from "http";
 import { Server } from "socket.io";
-import Contenedor from "./container/Contenedor.js";
+import router from "./routes/index.js";
+
 const productsContainer = new Contenedor(mariaDB, "productos");
 const messagesContainer = new Contenedor(sqliteDB, "messages");
 
@@ -27,6 +29,7 @@ let mensajes = []; */
 
 // Middlewares
 app.use(express.static("public"));
+app.use(router);
 
 // View engine
 app.set("view engine", "ejs");
@@ -70,5 +73,5 @@ io.on("connection", async (socket) => {
 
 // Server
 httpServer.listen(PORT, () => {
-  console.log("Server running on port...", PORT);
+  console.log(`Server running on port... ${PORT}`);
 });
