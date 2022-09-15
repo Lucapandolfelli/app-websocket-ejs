@@ -5,13 +5,12 @@ router.get("/", (req, res) => {
   res.render("./pages/login.ejs");
 });
 
-/* router.post("/", (req, res) => {
+router.post("/", (req, res) => {
   const { username } = req.body;
   if (username == "Pepe") {
     req.session.username = username;
-    res.redirect("index.ejs");
+    res.redirect("/");
   }
-  res.send("Login error");
-}); */
+});
 
 export default router;

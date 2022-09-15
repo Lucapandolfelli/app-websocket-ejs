@@ -1,12 +1,13 @@
-import { mariaDB, sqliteDB } from "./config/index.js";
+import { mariaDB, sqliteDB } from "./src/config/index.js";
 import express from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import Contenedor from "./container/Contenedor.js";
+import Contenedor from "./src/container/Contenedor.js";
 import http from "http";
 import { Server } from "socket.io";
-/* import router from "./routes/index.js"; */
+import router from "./src/routes/index.js";
 import cookieParser from "cookie-parser";
+import bcrypt from "bcrypt";
 
 const productsContainer = new Contenedor(mariaDB, "productos");
 const messagesContainer = new Contenedor(sqliteDB, "messages");
@@ -19,7 +20,6 @@ const io = new Server(httpServer);
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-/* app.use(router); */
 app.use(cookieParser());
 app.use(
   session({
@@ -33,49 +33,23 @@ app.use(
     saveUninitialized: false,
   })
 );
+app.use(router);
 
 // View engine
 app.set("view engine", "ejs");
-app.set("views", "./views");
-
-const isAuth = (req, res, next) => {
-  if (req.session.username) {
-    return next();
-  }
+app.set("views", "./src/views");
+/*
+app.post("/register", (req, res) => {
+  const { username, password, email } = req.body;
+  const hashedPassword = bcrypt.hash(password, 8);
+  const newUser = new User({
+    username,
+    password: hashedPassword,
+    email,
+  });
   res.redirect("/login");
-};
-
-// Routes
-app.get("/", isAuth, (req, res) => {
-  res.render("index.ejs", {
-    username: req.session.username,
-  });
 });
-
-app.get("/logout", (req, res) => {
-  res.render("./pages/logout.ejs", {
-    username: req.session.username,
-  });
-  req.session.destroy((err) => {
-    if (err) {
-      return res.json({ status: "Logout error", body: err });
-    }
-  });
-});
-
-app.get("/login", (req, res) => {
-  res.render("./pages/login.ejs");
-});
-
-app.post("/login", (req, res) => {
-  const { username } = req.body;
-  if (username == "Pepe") {
-    req.session.username = username;
-    res.redirect("/");
-  }
-  res.send("Login error");
-});
-
+ */
 // Socket.io
 io.on("connection", async (socket) => {
   // Connected

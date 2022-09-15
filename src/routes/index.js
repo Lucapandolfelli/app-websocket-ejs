@@ -1,4 +1,4 @@
-/* import { Router } from "express";
+import { Router } from "express";
 import { isAuth } from "../middleware/index.js";
 import productsRouter from "./productos.route.js";
 import logoutRouter from "./logout.route.js";
@@ -14,4 +14,4 @@ router.use("/login", loginRouter);
 router.use("/logout", logoutRouter);
 router.use("/api", productsRouter);
 
-export default router; */
+export default router;
