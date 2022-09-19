@@ -1,13 +1,14 @@
-import { mariaDB, sqliteDB } from "./src/config/index.js";
+import { mariaDB, sqliteDB, mongoDB } from "./src/config/index.js";
 import express from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import Contenedor from "./src/container/Contenedor.js";
 import http from "http";
 import { Server } from "socket.io";
-import router from "./src/routes/index.js";
+import router from "./src/routes/index.routes.js";
 import cookieParser from "cookie-parser";
-import bcrypt from "bcrypt";
+import passport from "passport";
+import "./src/middleware/passport.js";
 
 const productsContainer = new Contenedor(mariaDB, "productos");
 const messagesContainer = new Contenedor(sqliteDB, "messages");
@@ -24,8 +25,7 @@ app.use(cookieParser());
 app.use(
   session({
     store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://lucapandolfelli:francoyluca@cluster0.ytxyv2c.mongodb.net/?retryWrites=true&w=majority",
+      mongoUrl: process.env.MONGO_ATLAS_URI,
       ttl: 600,
     }),
     secret: "coder",
@@ -33,23 +33,15 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(router);
 
 // View engine
 app.set("view engine", "ejs");
 app.set("views", "./src/views");
-/*
-app.post("/register", (req, res) => {
-  const { username, password, email } = req.body;
-  const hashedPassword = bcrypt.hash(password, 8);
-  const newUser = new User({
-    username,
-    password: hashedPassword,
-    email,
-  });
-  res.redirect("/login");
-});
- */
+
 // Socket.io
 io.on("connection", async (socket) => {
   // Connected
