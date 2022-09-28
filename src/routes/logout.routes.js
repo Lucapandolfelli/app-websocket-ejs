@@ -10,6 +10,9 @@ router.get("/", (req, res) => {
     res.render("./pages/logout.ejs", {
       username: username,
     });
+    setInterval(() => {
+      res.redirect("/");
+    }, 2000);
   });
   /* res.render("./pages/logout.ejs", {
     username: req.session.username,

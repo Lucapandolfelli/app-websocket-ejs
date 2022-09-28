@@ -9,6 +9,10 @@ import router from "./src/routes/index.routes.js";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import "./src/middleware/passport.js";
+import minimist from "minimist";
+
+// Minimist
+const options = { default: { PORT: 8080 }, alias: { p: "PORT" } };
 
 const productsContainer = new Contenedor(mariaDB, "productos");
 const messagesContainer = new Contenedor(sqliteDB, "messages");
@@ -74,8 +78,8 @@ io.on("connection", async (socket) => {
 });
 
 // Server
-const PORT = process.env.PORT || 8080;
+const { PORT } = minimist(process.argv.slice(2), options);
 
 httpServer.listen(PORT, () => {
-  console.log(`Server running on port... ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}...`);
 });
