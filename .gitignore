@@ -1,6 +1,6 @@
 node_modules/
 .env
 nginx/*
-!ningx/conf
+!nginx/conf
 nginx/conf/*
 !nginx/conf/nginx.conf
