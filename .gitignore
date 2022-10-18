@@ -1,6 +1,11 @@
 node_modules/
 .env
-nginx/*
-!nginx/conf
-nginx/conf/*
-!nginx/conf/nginx.conf
+contrib/
+docs/
+html/
+logs/
+temp/
+nginx.exe
+!conf
+conf/*
+!conf/nginx.conf

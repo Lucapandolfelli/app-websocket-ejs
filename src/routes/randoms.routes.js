@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { fork } from "child_process";
 import cluster from "cluster";
-import { cpus } from "os";
 import { createServer } from "http";
+import { cpus } from "os";
 
-const router = Router();
 const numCPUs = cpus().length;
-const PORT = 8081;
+const router = Router();
 
-const forked = fork("./src/utils/generateRandomNumbers.js");
+// CLASE 28
+/* const forked = fork("./src/utils/generateRandomNumbers.js");
 
 forked.on("message", (message) => {
   if (message == "Ready") {
@@ -20,20 +20,16 @@ forked.on("message", (message) => {
           res.json(message);
         });
       } else {
-        forked.send(1000);
+        forked.send(1);
         forked.on("message", (message) => {
           res.json(message);
         });
       }
     });
   }
-});
+}); */
 
-const info = {
-  num_random: 2,
-  numCPUs: numCPUs,
-};
-
+// CLASE 30
 /* if (cluster.isPrimary) {
   console.log(`I am a master ${process.pid}`);
   for (let i = 0; i < numCPUs; i++) {
@@ -52,5 +48,18 @@ const info = {
 /* router.get("/randoms", (req, res) => {
   res.json(info);
 }); */
+
+router.get("/randoms", (req, res) => {
+  const info = {
+    num_random: Math.floor(Math.random() * (1000 - 1 + 1) + 1),
+    numCPUs: numCPUs,
+  };
+  /* res.json(info); */
+  res.send(
+    `Servidor express <span style="color:blueviolet;">(Nginx)</span> en ${parseInt(
+      process.argv[3]
+    )} - <b>PID ${process.pid}</b> - ${new Date().toLocaleString()}`
+  );
+});
 
 export default router;
