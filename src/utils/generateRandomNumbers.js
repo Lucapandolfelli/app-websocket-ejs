@@ -6,14 +6,17 @@ process.on("message", (message) => {
 process.send("Ready");
 
 const generateRandomNumbers = (cant) => {
-  const array = [];
+  const min = 1;
+  const max = 1000;
+  const randoms = {};
   for (let i = 0; i < cant; i++) {
-    const number = Math.floor(Math.random() * (1000 - 1)) + 1;
-    let randomNumber = {
-      number: number,
-      repeated: array.filter((item) => item == number).length,
-    };
-    array.push(randomNumber);
+    const random = Math.floor(Math.random() * (max - min + 1) + min);
+    const key = random.toString().padStart(4, "0");
+    if (randoms[key]) {
+      randoms[key] += 1;
+    } else {
+      randoms[key] = 1;
+    }
   }
-  return array;
+  return randoms;
 };

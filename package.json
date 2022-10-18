@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -r dotenv/config server.js -p 3001",
+    "dev": "nodemon -r dotenv/config server.js -p 8080",
     "start": "node -r dotenv/config server.js"
   },
   "keywords": [],
