@@ -53,13 +53,9 @@ router.get("/randoms", (req, res) => {
   const info = {
     num_random: Math.floor(Math.random() * (1000 - 1 + 1) + 1),
     numCPUs: numCPUs,
+    PORT: process.argv[3],
   };
-  /* res.json(info); */
-  res.send(
-    `Servidor express <span style="color:blueviolet;">(Nginx)</span> en ${parseInt(
-      process.argv[3]
-    )} - <b>PID ${process.pid}</b> - ${new Date().toLocaleString()}`
-  );
+  res.json(info);
 });
 
 export default router;

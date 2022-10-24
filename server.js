@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import "./src/middleware/passport.js";
 import minimist from "minimist";
+import compression from "compression";
 
 // Minimist
 const options = { default: { PORT: 8080 }, alias: { p: "PORT" } };
@@ -26,6 +27,7 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(compression());
 app.use(
   session({
     store: MongoStore.create({

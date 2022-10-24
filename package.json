@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -r dotenv/config server.js -p 8080",
+    "dev": "nodemon -r dotenv/config server.js -p",
     "start": "node -r dotenv/config server.js"
   },
   "keywords": [],
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "compression": "^1.7.4",
     "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
     "ejs": "3.1.8",
