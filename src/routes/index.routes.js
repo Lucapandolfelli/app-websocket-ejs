@@ -6,16 +6,20 @@ import loginRouter from "./login.routes.js";
 import registerRouter from "./register.routes.js";
 import errorsRouter from "./errors.routes.js";
 import randomsRouter from "./randoms.routes.js";
+import logger from "../logs/logger.js";
 const router = Router();
 
 router.get("/", isAuth, (req, res) => {
-  res.render("index.ejs", {
+  res.status(200).render("index.ejs", {
     username: req.user.username,
   });
+  logger.info(
+    `URL: ${req.url} - Method: ${req.method} - Status: ${req.statusCode}`
+  );
 });
 
 router.get("/info", (req, res) => {
-  res.render("pages/info.ejs", {
+  res.status(200).render("pages/info.ejs", {
     argumentosDeEntrada: process.argv.slice(2),
     nombrePlataforma: process.platform,
     versionNode: process.version,
@@ -24,6 +28,14 @@ router.get("/info", (req, res) => {
     processId: process.pid,
     carpetaProyecto: process.cwd(),
   });
+  logger.info(
+    `URL: ${req.url} - Method: ${req.method} - Status: ${req.statusCode}`
+  );
+});
+
+router.all("*", (req, res) => {
+  logger.warn(`URL: ${req.url} - Method: ${req.method} - Status: 404`);
+  res.status(404).render("./pages/404.ejs");
 });
 
 router.use("/register", registerRouter);

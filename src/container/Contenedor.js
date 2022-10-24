@@ -1,4 +1,5 @@
 import knex from "knex";
+import logger from "../logs/logger.js";
 
 class Contenedor {
   constructor(config, table) {
@@ -10,6 +11,7 @@ class Contenedor {
     try {
       return this.knex.insert(element).into(this.table);
     } catch (err) {
+      logger.error(err);
       return err;
     }
   }
@@ -18,6 +20,7 @@ class Contenedor {
     try {
       return this.knex.select("*").from(this.table);
     } catch (err) {
+      logger.error(err);
       return err;
     }
   }

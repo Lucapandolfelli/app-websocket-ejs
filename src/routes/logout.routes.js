@@ -1,4 +1,5 @@
 import { Router } from "express";
+import logger from "../logs/logger.js";
 const router = Router();
 
 router.get("/", (req, res) => {
@@ -6,12 +7,16 @@ router.get("/", (req, res) => {
   req.logout((err) => {
     if (err) {
       console.log(err);
+      logger.error(err);
     }
-    res.render("./pages/logout.ejs", {
+    res.status(200).render("./pages/logout.ejs", {
       username: username,
     });
+    logger.info(
+      `URL: ${req.url} - Method: ${req.method} - Status: ${req.statusCode}`
+    );
     setInterval(() => {
-      res.redirect("/");
+      res.status(302).redirect("/");
     }, 2000);
   });
   /* res.render("./pages/logout.ejs", {

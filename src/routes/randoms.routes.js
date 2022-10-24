@@ -55,7 +55,10 @@ router.get("/randoms", (req, res) => {
     numCPUs: numCPUs,
     PORT: process.argv[3],
   };
-  res.json(info);
+  res.status(200).json(info);
+  logger.info(
+    `URL: ${req.url} - Method: ${req.method} - Status: ${req.statusCode}`
+  );
 });
 
 export default router;

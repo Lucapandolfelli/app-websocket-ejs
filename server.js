@@ -11,6 +11,7 @@ import passport from "passport";
 import "./src/middleware/passport.js";
 import minimist from "minimist";
 import compression from "compression";
+import logger from "./src/logs/logger.js";
 
 // Minimist
 const options = { default: { PORT: 8080 }, alias: { p: "PORT" } };
@@ -51,7 +52,7 @@ app.set("views", "./src/views");
 // Socket.io
 io.on("connection", async (socket) => {
   // Connected
-  console.log(`${socket.id} connected.`);
+  logger.info(`${socket.id} connected.`);
 
   // Products
   socket.emit("products", await productsContainer.getAll());
@@ -75,7 +76,7 @@ io.on("connection", async (socket) => {
 
   // Disconnected
   socket.on("disconnect", () => {
-    console.log(`${socket.id} disconnected.`);
+    logger.info(`${socket.id} disconnected.`);
   });
 });
 
@@ -83,5 +84,10 @@ io.on("connection", async (socket) => {
 const { PORT } = minimist(process.argv.slice(2), options);
 
 httpServer.listen(PORT, () => {
+  logger.info(`🚀 Server running on port ${PORT}...`);
   console.log(`🚀 Server running on port ${PORT}...`);
+});
+
+httpServer.on("error", (err) => {
+  logger.error(err);
 });

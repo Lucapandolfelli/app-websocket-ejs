@@ -1,9 +1,13 @@
 import { Router } from "express";
 import passport from "passport";
+import logger from "../logs/logger.js";
 const router = Router();
 
 router.get("/", (req, res) => {
-  res.render("./pages/login.ejs");
+  res.status(200).render("./pages/login.ejs");
+  logger.info(
+    `URL: ${req.url} - Method: ${req.method}  - Status: ${req.statusCode}`
+  );
 });
 
 router.post(
@@ -12,7 +16,10 @@ router.post(
     failureRedirect: "login-error",
   }),
   (req, res) => {
-    res.redirect("/");
+    res.status(302).redirect("/");
+    logger.info(
+      `URL: ${req.url} - Method: ${req.method}  - Status: ${req.statusCode}`
+    );
   }
 );
 
