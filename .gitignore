@@ -1,5 +1,10 @@
+# node_modules
 node_modules/
+
+# .env file
 .env
+
+# nginx files
 contrib/
 docs/
 html/
@@ -8,4 +13,12 @@ temp/
 nginx.exe
 !conf
 conf/*
+
+# except nginx config file
 !conf/nginx.conf
+
+# not logs from app
+!src/logs
+
+# db folder, not used anymore
+src/db/*
