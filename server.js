@@ -1,12 +1,9 @@
-import { mariaDB, sqliteDB } from "./src/config/index.js";
 import ProductService from "./src/services/product.service.js";
 import MessageService from "./src/services/message.service.js";
 import mongoose from "mongoose";
 import express from "express";
 import session from "express-session";
-import MongoStore from "connect-mongo";
-import Contenedor from "./src/container/Contenedor.js";
-import http from "http";
+import { createServer } from "http";
 import { Server } from "socket.io";
 import router from "./src/routes/index.routes.js";
 import cookieParser from "cookie-parser";
@@ -23,7 +20,7 @@ const options = { default: { PORT: 8080 }, alias: { p: "PORT" } };
 const messagesContainer = new Contenedor(sqliteDB, "messages"); */
 
 const app = express();
-const httpServer = http.createServer(app);
+const httpServer = createServer(app);
 const io = new Server(httpServer);
 
 // Middlewares
@@ -39,7 +36,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(router);
@@ -81,6 +77,7 @@ io.on("connection", async (socket) => {
 
 // Server
 const { PORT } = minimist(process.argv.slice(2), options);
+
 mongoose.connect(process.env.MONGO_DB_URI).then(() => {
   logger.info(`🚀 MongoDB connected`);
   httpServer.listen(PORT, () => {
