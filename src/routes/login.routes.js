@@ -1,14 +1,11 @@
 import { Router } from "express";
 import passport from "passport";
 import logger from "../logs/logger.js";
+import UserController from "../controllers/user.controller.js";
+
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.status(200).render("./pages/login.ejs");
-  logger.info(
-    `URL: ${req.url} - Method: ${req.method}  - Status: ${req.statusCode}`
-  );
-});
+router.get("/", UserController.renderLoginView);
 
 router.post(
   "/",
@@ -16,10 +13,8 @@ router.post(
     failureRedirect: "login-error",
   }),
   (req, res) => {
+    logger.http(`${req.method} ${req.originalUrl} ${res.statusCode}`);
     res.status(302).redirect("/");
-    logger.info(
-      `URL: ${req.url} - Method: ${req.method}  - Status: ${req.statusCode}`
-    );
   }
 );
 

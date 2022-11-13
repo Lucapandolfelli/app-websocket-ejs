@@ -7,17 +7,15 @@ router.get("/", (req, res) => {
   req.logout((err) => {
     if (err) {
       console.log(err);
-      logger.error(err);
+      logger.error(`${req.method} ${req.originalUrl} ${res.statusCode}`);
     }
+    logger.http(`${req.method} ${req.originalUrl} ${res.statusCode}`);
     res.status(200).render("./pages/logout.ejs", {
       username: username,
     });
-    logger.info(
-      `URL: ${req.url} - Method: ${req.method} - Status: ${req.statusCode}`
-    );
-    setInterval(() => {
+    /* setInterval(() => {
       res.status(302).redirect("/");
-    }, 2000);
+    }, 2000); */
   });
   /* res.render("./pages/logout.ejs", {
     username: req.session.username,

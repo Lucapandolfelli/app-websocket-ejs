@@ -8,7 +8,7 @@ const renderProducts = (products) => {
     const html = products
       .map((product) => {
         return `<tr>
-                  <th scope="row">${product.id}</th>
+                  <th scope="row">${product._id}</th>
                   <td>${product.title}</td>
                   <td>${product.price}</td>
                   <td style="width: 100px;"><img class="w-100" src="${product.thumbnail}"></td>

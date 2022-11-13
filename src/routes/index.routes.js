@@ -10,15 +10,14 @@ import logger from "../logs/logger.js";
 const router = Router();
 
 router.get("/", isAuth, (req, res) => {
+  logger.http(`${req.method} ${req.originalUrl} ${res.statusCode}`);
   res.status(200).render("index.ejs", {
     username: req.user.username,
   });
-  logger.info(
-    `URL: ${req.url} - Method: ${req.method} - Status: ${req.statusCode}`
-  );
 });
 
 router.get("/info", (req, res) => {
+  logger.http(`${req.method} ${req.originalUrl} ${res.statusCode}`);
   res.status(200).render("pages/info.ejs", {
     argumentosDeEntrada: process.argv.slice(2),
     nombrePlataforma: process.platform,
@@ -28,14 +27,6 @@ router.get("/info", (req, res) => {
     processId: process.pid,
     carpetaProyecto: process.cwd(),
   });
-  logger.info(
-    `URL: ${req.url} - Method: ${req.method} - Status: ${req.statusCode}`
-  );
-});
-
-router.all("*", (req, res) => {
-  logger.warn(`URL: ${req.url} - Method: ${req.method} - Status: 404`);
-  res.status(404).render("./pages/404.ejs");
 });
 
 router.use("/register", registerRouter);
@@ -44,5 +35,10 @@ router.use("/logout", logoutRouter);
 router.use("/api", randomsRouter);
 router.use("/api/productos-test", productsRouter);
 router.use(errorsRouter);
+
+router.all("*", (req, res) => {
+  logger.error(`${req.method} ${req.originalUrl} ${res.statusCode}`);
+  res.status(404).render("./pages/404.ejs");
+});
 
 export default router;
